@@ -7,7 +7,7 @@
   * 5. GET FACEBOOK NUMERIC ID FROM: http://findmyfacebookid.com/
   * 6. GET ACCESS TOKEN FROM THE FOLLOWING URL. IT REDIRECTS TO ANOTHER PAGE QUICKLY, SO GRAB THE URL UP TOP BEFORE IT CHANGES QUICKLY.
   *
-  * https://www.facebook.com/dialog/oauth?client_id=464891386855067&redirect_uri=https://www.facebook.com/connect/login_success.html&scope=basic_info,email,public_profile,user_about_me,user_activities,user_birthday,user_education_history,user_friends,user_interests,user_likes,user_location,user_photos,user_relationship_details&response_type=token 
+  * https://www.facebook.com/dialog/oauth?client_id=464891386855067&redirect_uri=https://www.facebook.com/connect/login_success.html&scope=basic_info,email,public_profile,user_about_me,user_activities,user_birthday,user_education_history,user_friends,user_interests,user_likes,user_location,user_photos,user_relationship_details&response_type=token
   *
   * 7. To run, type 'node app.js FACEBOOK_ID THE_URL_YOU_COPIED_AND_PASTED'
   *
@@ -52,22 +52,31 @@ bot.client.authorize(bot.access_token, bot.facebook_id, function(){
       _.chain(data.results)
       .each(function(v,k) {
         console.log(v.name);
-        bot.client.like(v._id, function(error, data) {
-          count++;
-          console.log('Count: ' + count);
-          if (data && data.matched) {
-            console.log('MATCHED!');
-            console.log(user);
-          }
-        //   if (data.matched) {
-        //     bot.client.sendMessage(
-        //       id,
-        //       "You're gorgeous. Let's adventure"
-        //     );
-        //   }
-        });
+        console.log(JSON.stringify(v));
+        console.log(k);
+        if (v.name === "Tinder Team") {
+            console.log("You have reached your like limit");
+            clearInterval(interval);
+        } else if ( v.common_friend_count == 0 &&
+                    v.bio.indexOf("trans") != -1 &&
+                    v.bio.indexOf("Trans") != -1 &&
+                    v.bio.indexOf("TRANS") != -1) {
+                        bot.client.like(v._id, function(error, data) {
+                            count++;
+                            console.log('Count: ' + count);
+                            if (data && data.match) {
+                                console.log('MATCHED! --------> ', user);
+                            }
+                            //   if (data.match) {
+                            //     bot.client.sendMessage(
+                            //       id,
+                            //       "You're gorgeous. Let's adventure"
+                            //     );
+                            //   }
+            });
+        }
       });
     });
   }, 5000);
-}); 
+});
 
