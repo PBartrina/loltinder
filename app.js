@@ -50,17 +50,18 @@ bot.client.authorize(bot.access_token, bot.facebook_id, function(){
       }
 
       _.chain(data.results)
-      .each(function(v,k) {
-        console.log(v.name);
-        console.log(JSON.stringify(v));
-        console.log(k);
+      .every(function(v,k) {
         if (v.name === "Tinder Team") {
             console.log("You have reached your like limit");
             clearInterval(interval);
+            return;
         } else if ( v.common_friend_count == 0 &&
                     v.bio.indexOf("trans") != -1 &&
                     v.bio.indexOf("Trans") != -1 &&
                     v.bio.indexOf("TRANS") != -1) {
+
+                        console.log(v.name);
+
                         bot.client.like(v._id, function(error, data) {
                             count++;
                             console.log('Count: ' + count);
